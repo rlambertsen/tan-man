@@ -87,7 +87,7 @@ class VideoCaptionController extends Controller {
                 report($e);
             }
         }
-
+        unlink($captionsPath.$filenameWithExt); // clean up file we dont want it laying around
         return response()->json($subs);
     }
 
