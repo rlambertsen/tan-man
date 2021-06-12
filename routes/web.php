@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\VideoCaptionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::post('/upload', [VideoCaptionController::class, 'action_list_caption']);
+Route::post('/search', [VideoCaptionController::class, 'search']);
+
+
+Route::get('/{any}', 'SinglePageController@index')->where('any', '.*');
