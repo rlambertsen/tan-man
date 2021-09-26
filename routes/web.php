@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoCaptionController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\SearchController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,8 +20,9 @@ Route::get('/', function () {
 });
 
 
-Route::post('/upload', [VideoCaptionController::class, 'action_list_caption']);
-Route::post('/search', [VideoCaptionController::class, 'search']);
+Route::post('/upload_video_file', [ImageController::class, 'create_images_from_video_file']);
+Route::post('/upload_caption_file', [VideoCaptionController::class, 'action_list_caption']);
+Route::post('/search', [SearchController::class, 'search']);
 
 
 Route::get('/{any}', 'SinglePageController@index')->where('any', '.*');

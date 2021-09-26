@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VideoCaption;
+use App\Models\VideoImage;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use FFMpeg;
 define('SRT_STATE_SUBNUMBER', 0);
 define('SRT_STATE_TIME',      1);
 define('SRT_STATE_TEXT',      2);
@@ -15,6 +17,7 @@ class VideoCaptionController extends Controller {
     public function action_list_caption(Request $request) {
         $captionsPath = storage_path('app/captions/');
         // Get filename with the extension
+        $this->removeCaptions();
         $filenameWithExt = $request->file('file')->getClientOriginalName();
         // need just file name, try to get season and episode numbers
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -46,8 +49,16 @@ class VideoCaptionController extends Controller {
                         $sub = new \stdClass();
                         $sub->number = $subNum;
                         list($sub->startTime, $sub->stopTime) = explode(' --> ', $subTime);
-                        $sub->startTime = str_replace(',', '.', $sub->startTime); // replace , with .
-                        $sub->stopTime = str_replace(',', '.', $sub->stopTime); // replace , with .
+
+                        $startTime = explode(':', $sub->startTime);
+                        $startTimeSeconds = (intval($startTime[1]) * 60) + intval(explode(',',$startTime[2])[0]);
+
+                        $stopTime = explode(':', $sub->stopTime);
+                        $stopTimeSeconds = (intval($stopTime[1]) * 60) + intval(explode(',',$stopTime[2])[0]);
+
+
+                        $sub->startTime = $startTimeSeconds;
+                        $sub->stopTime = $stopTimeSeconds;
                         $sub->text   = utf8_decode($subText);
                         $subText     = '';
                         $state       = SRT_STATE_SUBNUMBER;
@@ -91,8 +102,13 @@ class VideoCaptionController extends Controller {
         return response()->json($subs);
     }
 
-    public function search(Request $request) {
-        $captions = VideoCaption::where('text', 'like', '%' . $request->search . '%')->get();
-        return response()->json($captions);
+
+
+
+
+    private function removeCaptions() {
+        foreach(Storage::disk('captions')->files() as $file) {
+             unlink(Storage::disk('captions')->path('/').$file);
+        }
     }
 }
