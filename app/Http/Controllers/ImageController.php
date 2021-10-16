@@ -4,21 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VideoCaption;
+use App\Models\VideoImage;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use FFMpeg;
+use Illuminate\Support\Str;
 define('SRT_STATE_SUBNUMBER', 0);
 define('SRT_STATE_TIME',      1);
 define('SRT_STATE_TEXT',      2);
 define('SRT_STATE_BLANK',     3);
-
+ini_set('max_execution_time', 300);
 
 class ImageController extends Controller {
 
     public function create_images_from_video_file(Request $request) {
         $imagePath = storage_path('images');
         $captionsPath = storage_path('app/captions');
-        $this->removeCaptions();
+
         // Get filename with the extension
         $filenameWithExt = $request->file('file')->getClientOriginalName();
         // need just file name, try to get season and episode numbers
@@ -68,12 +70,13 @@ class ImageController extends Controller {
                     ->addFilter("select='gt(scene\,0.4)'", 1)
                     ->getFrameFromSeconds($seconds)
                     ->export()
-                    ->toDisk('images')
-                    ->save(trim(explode('.', $titleParts[2])[0]). '-' . $episode . '-' . $caption->number.'-'.$seconds.'.png');
+                    ->withVisibility('public')
+                    ->toDisk('spaces')
+                    ->save(trim(explode('.', $titleParts[2])[0]). '-' . $episode . '-' . $caption->number.'-'.$seconds. Str::uuid()->toString() .'.png');
             }
 
             // get all images and match them to the current captions and save that to db
-            foreach(Storage::disk('images')->files() as $file) {
+            foreach(Storage::disk('spaces')->files() as $file) {
                 $fileName = explode('-', $file)[2];
                 if ($fileName == $caption->number) {
 
@@ -86,7 +89,7 @@ class ImageController extends Controller {
                         $imageData->number = $caption->number;
                         $imageData->startTime = $caption->startTime;
                         $imageData->stopTime = $caption->stopTime;
-                        $imageData->url = Storage::url('images/'.$file);
+                        $imageData->url = Storage::disk('spaces')->url($file);
                         $imageData->save();
                     }
                     catch(Throwable $e) {
@@ -99,7 +102,7 @@ class ImageController extends Controller {
                         'episodeNumber' => $caption->episodeNumber,
                         'startTime' => $caption->startTime,
                         'stopTime' => $caption->stopTime,
-                        'url' => Storage::url('images/'.$file),
+                        'url' => Storage::disk('spaces')->url($file),
                     );
                     array_push($imagePaths, $object);
                 }

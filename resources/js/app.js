@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 window.axios = axios
 import App from './App.vue'
 import Welcome from './views/welcome.vue'
-
+import upload from './views/upload'
 const router = new VueRouter({
     mode: 'history',
     routes: [
@@ -13,6 +13,11 @@ const router = new VueRouter({
             path: '/',
             name: 'home',
             component: Welcome
+        },
+        {
+            path: '/upload',
+            name: 'upload',
+            component: upload
         },
     ],
 });

@@ -17,11 +17,12 @@ class SearchController extends Controller {
             $lists = VideoImage::where('text', 'like', '%' . $request->search . '%')
                 //->limit(75)
                 ->get()
+                //->chunk(5)
                 ->groupBy('number')
                 ->toArray();
             $results = [];
             forEach($lists as $list){
-                array_push($results, $list[0]);
+                array_push($results, current($list));
             }
         }
 

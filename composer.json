@@ -14,7 +14,8 @@
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "league/flysystem-aws-s3-v3": "^1",
-        "pbmedia/laravel-ffmpeg": "^7.5"
+        "pbmedia/laravel-ffmpeg": "^7.5",
+        "webpatser/laravel-uuid": "^4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

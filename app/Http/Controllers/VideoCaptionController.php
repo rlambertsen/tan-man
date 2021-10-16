@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VideoCaption;
-use App\Models\VideoImage;
+
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use FFMpeg;
@@ -23,6 +23,7 @@ class VideoCaptionController extends Controller {
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
         // save to storage and get path
         $path = $request->file('file')->storeAs('captions',$filenameWithExt);
+        //$path = Storage::disk('spaces')->putFileAs('captions', $request->file('file'), $filenameWithExt, 'public');
         // get saved file for use
         $lines   = file($captionsPath.$filenameWithExt);
         // create array to hold all data
