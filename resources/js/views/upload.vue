@@ -40,7 +40,7 @@ export default {
             let formData = new FormData();
             formData.append('file', this.videoFile);
 
-            window.axios.post('/upload_video_file', formData, config).then(function (response) {
+            window.axios.post('/api/upload_video_file', formData, config).then(function (response) {
                 currentObj.success = response.data.success;
             }).catch(function (error) {
                 currentObj.output = error;

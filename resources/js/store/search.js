@@ -6,14 +6,14 @@ export default {
     actions: {
         async textSearch({commit}, payload) {
             try{
-                let results = await window.axios.post('/search', {search: payload})
+                let results = await window.axios.post('/api/search', {search: payload})
                 commit('SEARCH_RETURN', results.data)
                 return results
             }
             catch(e) {
                 throw e
             }
-        }
+        },
     },
     mutations: {
         SEARCH_RETURN(state, payload) {

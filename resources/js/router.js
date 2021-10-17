@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-import imageGrid from './views/image-grid.vue'
+import home from './views/home.vue'
 import upload from './views/upload'
 import imageView from './views/view-image'
 const router = new VueRouter({
@@ -10,7 +10,7 @@ const router = new VueRouter({
         {
             path: '/',
             name: 'home',
-            component: imageGrid
+            component: home
         },
         {
             path: '/upload',

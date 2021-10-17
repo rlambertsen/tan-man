@@ -3,12 +3,18 @@
         <div class="row mt-3 justify-content-center align-items-center" v-if="imageObject">
             <div class="col-lg-4">
             <div class="card" style="background-color: #000">
-                <div class="card-body">
-                    <img :src="imageObject.url"
-                         :alt="imageObject.text"
-                         class="img-fluid"
-                         ref="currentImage"
-                    />
+                <div class="card-body text-center">
+                    <template v-if="userImage">
+                        <img :src="userImage" class="img-fluid text-center" alt=""/>
+                        <button class="btn btn-sm btn-success mt-2" @click="downloadMeme">Download</button>
+                    </template>
+                    <template v-else>
+                        <img :src="imageObject.url"
+                             :alt="imageObject.text"
+                             class="img-fluid text-center"
+                             ref="currentImage"
+                        />
+                    </template>
                 </div>
             </div>
         </div>
@@ -20,7 +26,7 @@
                         <small>Episode #: {{imageObject.episodeNumber}}</small>
                     </p>
                     <hr class="w-50"/>
-                    <p v-if="removeText">{{removeText}}</p>
+                    <p v-if="removeText">"{{removeText}}"</p>
                     <button class="btn btn-sm btn-success" @click="createMeme">Make MEME</button>
                 </div>
                 <div class="meme-form row" v-if="makeMeme">
@@ -34,25 +40,35 @@
                 </div>
             </div>
         </div>
-        <div class="row" v-if="userImage">
-            <div class="col-lg-4">
-                <img :src="userImage" class="img-fluid" alt=""/>
-                <button class="btn btn-sm btn-success" @click="downloadMeme">Download</button>
-            </div>
-        </div>
+        <nearImages v-if="nearImages"></nearImages>
     </section>
 </template>
 
 <script>
+import nearImages from './near-image-list'
 import {mapActions, mapState} from 'vuex'
 export default {
     name: "view-image",
+    components: {
+        nearImages
+    },
     computed: {
         ...mapState({
             imageObject: state => state.singleImage.imageObject,
+            nearImages: state => state.singleImage.nearImages,
         }),
         removeText() {
-            return this.imageObject.text.replaceAll('%', '')
+            return (this.imageObject ? this.imageObject.text.replaceAll('%', '') : false)
+        },
+    },
+    watch: {
+        imageObject() {
+            if (!this.imageObject) {
+                this.makeMeme = false
+                this.userMemeText = null
+            } else {
+                this.getNearImages(this.imageObject.id).catch(e => console.error(e))
+            }
         },
     },
     data() {
@@ -63,7 +79,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('singleImage', ['getSingleImage']),
+        ...mapActions('singleImage', ['getSingleImage', 'getNearImages']),
         createMeme() {
             this.makeMeme = !this.makeMeme
             this.userMemeText = this.removeText
@@ -78,7 +94,10 @@ export default {
                 textAlign: 'center',
                 fontSize: '35px',
             },(obj) => {
-                console.log(obj)
+                if (obj.error) {
+                    alert('Oh no: ' + obj.error) // show the error to user
+                    return false
+                }
                 if (!obj.error) {
                     this.userImage = obj.image
                 }
@@ -92,7 +111,9 @@ export default {
             a.remove()
         }
     },
-    created() {},
+    created() {
+        if (this.imageObject) this.getNearImages(this.imageObject.id).catch(e => console.error(e))
+    },
 }
 </script>
 

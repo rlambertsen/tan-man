@@ -115,8 +115,28 @@ class ImageController extends Controller {
 
 
     public function get_single_image(Request $request) {
-           $results = VideoImage::findOrFail($request->id);
-           return response()->json($results);
+       // get single record from table
+       $results = VideoImage::findOrFail($request->id);
+       return response()->json($results);
+    }
+
+    public function get_random_image(Request $request) {
+        // get random image record from table
+        $result = VideoImage::inRandomOrder()->limit(1)->get();
+        return response()->json($result);
+    }
+
+    public function get_near_images(Request $request) {
+        // get previous 5 records from current image
+        $before = VideoImage::where('id', '<', $request->id)->latest('id')->limit(3)->get();
+        // get 5 records after from current image
+        $after = VideoImage::where('id', '>', $request->id)->oldest('id')->limit(2)->get();
+        // get current record cause we lazy
+        $current = VideoImage::findOrFail($request->id);
+        // put into array
+        $results = [$before, $current, $after];
+        // return that shit
+        return response()->json($results);
     }
 
 }

@@ -24,7 +24,6 @@ export default {
         return {
             captionFile: null,
             videoFile: null,
-            search: null,
         }
     },
     methods: {

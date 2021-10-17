@@ -15,11 +15,21 @@ use App\Http\Controllers\SinglePageController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+$router->group(['prefix' => 'api'], function ($router) {
+	$router->post('/upload_video_file', [ImageController::class, 'create_images_from_video_file']);
+
+    $router->post('/view-image/{id}', [ImageController::class, 'get_single_image']);
+
+    $router->get('/random', [ImageController::class, 'get_random_image']);
+
+    $router->post('/upload_caption_file', [VideoCaptionController::class, 'action_list_caption']);
+
+    $router->post('/search', [SearchController::class, 'search']);
+
+    $router->get('/get_near_images/{id}', [ImageController::class, 'get_near_images']);
+});
+
+$router->get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');
 
 
-Route::get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');
 
-Route::post('/upload_video_file', [ImageController::class, 'create_images_from_video_file']);
-Route::post('/view-image/{id}', [ImageController::class, 'get_single_image']);
-Route::post('/upload_caption_file', [VideoCaptionController::class, 'action_list_caption']);
-Route::post('/search', [SearchController::class, 'search']);
