@@ -1,16 +1,23 @@
 <template>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <router-view></router-view>
+    <section style="height: 100vh;">
+        <globalNav></globalNav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <router-view></router-view>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
+import globalNav from './utilitys/global-nav'
 export default {
-    name: "App"
+    name: "App",
+    components: {
+        globalNav
+    },
 }
 </script>
 

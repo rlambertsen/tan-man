@@ -20,5 +20,6 @@ use App\Http\Controllers\SinglePageController;
 Route::get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');
 
 Route::post('/upload_video_file', [ImageController::class, 'create_images_from_video_file']);
+Route::post('/view-image/{id}', [ImageController::class, 'get_single_image']);
 Route::post('/upload_caption_file', [VideoCaptionController::class, 'action_list_caption']);
 Route::post('/search', [SearchController::class, 'search']);

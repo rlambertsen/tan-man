@@ -113,4 +113,10 @@ class ImageController extends Controller {
         return response()->json($imagePaths);
     }
 
+
+    public function get_single_image(Request $request) {
+           $results = VideoImage::findOrFail($request->id);
+           return response()->json($results);
+    }
+
 }

@@ -1,1 +1,17 @@
+@import './overrides.scss';
+/*anything above will ovveride BS*/
 @import '~bootstrap/scss/bootstrap';
+
+/*Main*/
+$main-green: #748c74;
+$off-grey: #cbd1d;
+
+
+
+body {
+    background-color: $main-green;
+}
+
+.text-white{
+    color: #fff;
+}
